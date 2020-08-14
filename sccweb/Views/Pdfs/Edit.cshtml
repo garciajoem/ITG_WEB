@@ -1,0 +1,130 @@
+﻿@model itgweb.Models.Pdf
+@{
+    ViewBag.Title = "Edit";
+    var vi = 0;
+}
+@RenderPage("../Shared/PanelMenu.cshtml")
+<div class="panel panel-body page-edit">
+    @using (Html.BeginForm("Edit", "Pdfs", null, FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-pdf form-pdf-edit" }))
+    {
+        @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <div class="row form-header">
+            <div class="col-sm-6">
+                <h4>Edit Pdf</h4>
+            </div>
+            <div class="col-sm-6 text-right">
+                <a href="@Url.Action("Index")" class="f-back btn btn-default btn-sm">
+                    Back to List
+                </a>
+            </div>
+        </div>
+
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="row form-group form-image">
+            @Html.Label("Image header", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="row">
+                    <div class="col-md-8">
+                        @if (ViewBag.Img == true)
+                        {
+                            <div class="fi fi-data-img">
+                                <span class="fdi fdi-remove"><i class="fa fa-times" aria-hidden="true"></i></span>
+                                <img class="fdi fdi-img" src="~/Pdfs/RetrieveImage/@Html.DisplayFor(model => model.Id)" alt="" width="250" />
+                            </div>
+                        }
+                        else
+                        {
+                            <input type="file" id="uploadImg" name="fileImg" accept="image/png,image/jpg,image/jpeg" onchange="fileCheck(this)" />
+                        }
+                    </div>
+                    <div class="col-md-4">
+                        @Html.LabelFor(model => model.Created, htmlAttributes: new { @class = "control-label" })
+                        @Html.EditorFor(model => model.Created, new { htmlAttributes = new { @class = "form-control datepicker" }, type = "date" })
+                        @Html.ValidationMessageFor(model => model.Created, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row form-group">
+            @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="row form-group">
+            @Html.LabelFor(model => model.Summary, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Summary, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Summary, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="row form-group">
+            @Html.LabelFor(model => model.Created, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Created, new { htmlAttributes = new { @class = "form-control datepicker" }, type = "date" })
+                @Html.ValidationMessageFor(model => model.Created, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="row form-group">
+            @Html.Label("Pdf Link", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ExLink, new { htmlAttributes = new { @class = "form-control" }})
+                @Html.ValidationMessageFor(model => model.ExLink, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="row form-group">
+            @Html.Label("Pdf File", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input type="file" id="uploadPdf" name="filePdf" accept=".pdf" onchange="fileCheck(this)" />
+            </div>
+        </div>
+        <div class="row form-group">
+            @Html.LabelFor(model => model.Publish, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <span class="pub -yes">
+                    <span class="pl">Yes</span>
+                    @Html.RadioButtonFor(model => model.Publish, "1")
+                </span>
+                <span class="pub -no">
+                    <span class="pl">No</span>
+                    @Html.RadioButtonFor(model => model.Publish, "0")
+                </span>
+                @Html.ValidationMessageFor(model => model.Publish, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="row form-group">
+            @Html.LabelFor(model => model.IsExternal, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <span class="pub -yes">
+                    <span class="pl">Yes</span>
+                    @Html.RadioButtonFor(model => model.IsExternal, "1")
+                </span>
+                <span class="pub -no">
+                    <span class="pl">No</span>
+                    @Html.RadioButtonFor(model => model.IsExternal, "0")
+                </span>
+            </div>
+        </div>
+        <div id="adv-set" class="collapse multi-collapse">
+            <div class="row form-group">
+                @Html.LabelFor(model => model.Author, "Author", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Author, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Author, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="row form-group">
+            <div class="col-md-2"></div>
+            <div class="col-md-offset-2 col-md-10 f-control">
+                <input type="submit" value="Save" class="btn btn-success" />
+            </div>
+        </div>
+    </div>
+    }
+</div>

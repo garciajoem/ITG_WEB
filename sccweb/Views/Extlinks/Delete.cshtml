@@ -1,0 +1,53 @@
+﻿@model itgweb.Models.Extlink
+@{
+    ViewBag.Title = "Delete";
+}
+@RenderPage("../Shared/PanelMenu.cshtml")
+<div class="panel panel-body">
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal form-delete">
+        @using (Html.BeginForm("Delete", "Extlinks", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <div class="row form-header">
+                <div class="col-sm-6">
+                    <h4>Delete Page</h4>
+                </div>
+                <div class="col-sm-6">
+
+                    <p class="text-right">
+                        Are you sure you want to delete this?
+                    </p>
+
+                    <p class="text-right">
+                        <input type="submit" value="Delete" class="btn btn-danger btn-sm" />
+                        <a href="@Url.Action("Index")" class="btn btn-default btn-sm">
+                            Back to List
+                        </a>
+                    </p>
+                </div>
+            </div>
+        }
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="row form-group">
+            @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DisplayFor(model => model.Title)
+            </div>
+        </div>
+
+        <div class="row form-group">
+            @Html.LabelFor(model => model.Created, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DisplayTextFor(model => model.Created)
+            </div>
+        </div>
+        <div class="row form-group">
+            @Html.Label("Image", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <img src="/Extlinks/RetrieveImage/@Html.DisplayFor(model => model.Id)" alt="" width="200" />
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,115 @@
+﻿<!-- Side Navigation -->
+<nav class="sidebar">
+    <div class="sidebar-header">
+        <div class="brand-toggle">
+            @Html.ActionLink("Saint Clair County Michigan", "Index", "Home", new { @class = "site-brand" })
+            <button type="button" class="sidebar-toggle btn btn-toggle" data-toggle="expanded" data-target=".sidebar">
+                <i class="fa fa-angle-right" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="search-box">
+            <form class="form-inline">
+                <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+            </form>
+        </div>
+    </div>
+    <div class="sidebar-nav">
+        <ul class="nav">
+            @foreach (var MenuItems in ViewBag.SubMenus)
+            {
+                if (MenuItems.Name == "Quick Links")
+                {
+                    foreach (var MenuLists in ViewBag.SubMenus)
+                    {
+                        if (MenuItems.Id == MenuLists.ParentId)
+                        {
+                            if (MenuLists.Type == 1)
+                            {
+                                foreach (var PageItem in ViewBag.PageItems)
+                                {
+                                    if (MenuLists.PageId == PageItem.Id && PageItem.Publish == 1)
+                                    {
+                                        <li>
+                                            <a href="~/Offices/@PageItem.Id">
+                                                <span class="bg-img ico-img" data-target=".image-bg">
+                                                    <img class="image-bg" src="~/Pages/PageImages/@PageItem.Id" width="100%" />
+                                                </span>
+                                                <span>@PageItem.Title</span>
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                            }
+                            else if (MenuLists.Type == 2)
+                            {
+                                foreach (var PdfItem in ViewBag.PdfItems)
+                                {
+                                    if (MenuLists.PdfId == PdfItem.Id && PdfItem.Publish == 1)
+                                    {
+                                        int PdfExternal = 0;
+                                        var PdfImg = "";
+                                        if (PdfItem.Img != null) {
+                                            PdfImg = Convert.ToBase64String(PdfItem.Img);
+                                        }
+
+                                        if (PdfItem.IsExternal != null && PdfItem.IsExternal == 1)
+                                        {
+                                            PdfExternal = PdfItem.IsExternal;
+                                        }
+
+                                        <li class="@(PdfImg == "" ? "noImg": "")">
+                                            <a href="~/Offices/@PdfItem.Id" data-external="@PdfExternal">
+                                                @if (PdfImg != "") { 
+                                                    <span class="bg-img ico-img" data-target=".image-bg">
+                                                        <img class="image-bg" src="~/Pdfs/PdfImages/@PdfItem.Id" width="100%" />
+                                                    </span>
+                                                }
+                                                <span>@PdfItem.Title</span>
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                            }
+                            else if (MenuLists.Type == 3)
+                            {
+                                foreach (var LinkItem in ViewBag.ExLinkItems)
+                                {
+                                    if (MenuLists.ExtlinkId == LinkItem.Id)
+                                    {
+                                        int LinkExternal = 0;
+                                        var LinkImg = "";
+
+                                        if (LinkItem.Img != null) {
+                                            LinkImg = Convert.ToBase64String(LinkItem.Img);
+                                        }
+
+                                        if (LinkItem.IsExternal != null && LinkItem.IsExternal == 1)
+                                        {
+                                            LinkExternal = LinkItem.IsExternal;
+                                        }
+
+                                        <li  class="@(LinkImg == "" ? "noImg": "")">
+                                            <a href="@LinkItem.UrlLink" data-external="@LinkExternal">
+                                                @if (LinkImg != "")
+                                                {
+                                                    <span class="bg-img ico-img" data-target=".image-bg">
+                                                        <img class="image-bg" src="~/Extlinks/LinkImages/@LinkItem.Id" width="100%" />
+                                                    </span>
+                                                }
+
+                                                <span>@LinkItem.Title</span>
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        </ul>
+    </div>
+</nav>
+<div class="sidebar-overlay"></div>
+<!-- End Side Navigation -->

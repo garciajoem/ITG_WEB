@@ -1,0 +1,80 @@
+﻿@model IEnumerable<itgweb.ViewModel.AuthorViewModel>
+@{
+    ViewBag.Title = "All Authors";
+}
+@RenderPage("../Shared/PanelMenu.cshtml")
+<div class="panel panel-body">
+    <h2>All Authors</h2>
+    <hr />
+    <p class="text-right">
+        @Html.ActionLink("Create New", "Create", "", new { @class = "btn btn-success" })
+    </p>
+    <table class="table page page-main table-striped table-bordered table-sm">
+        <tbody>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Position
+                </th>
+                <th>
+                    Summary
+                </th>
+                <th>
+                    Image
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Position)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Summary)
+            </td>
+            <td>
+                <img src="~/Authors/RetrieveImage/@item.Id" alt="" width=100 />
+            </td>
+            <td>
+                <div class="actions text-right">
+                    <a href="@Url.Action("Edit", new { id = item.Id })" class="ai btn btn-success">
+                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                    </a>
+                    <a href="@Url.Action("Detail", new { id = item.Id })" class="ai btn btn-warning">
+                        <i class="fa fa-eye" aria-hidden="true"></i>
+                    </a>
+                    <a class="ai ai-expand btn btn-primary">
+                        <i class="fa fa-list-ul" aria-hidden="true"></i>
+                    </a>
+                    <a href="@Url.Action("Delete", new { id = item.Id })" class="ai ai-trash btn btn-danger">
+                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                    </a>
+                </div>
+                <div class="add-dtls" style="display: none">
+                    <table>
+                        <tr>
+                            <th>@Html.DisplayNameFor(model => model.Created)</th>
+                            <th>@Html.DisplayNameFor(model => model.Email)</th>
+                            <th>@Html.DisplayNameFor(model => model.Phone)</th>
+                        </tr>
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.Created)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Phone)</td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+            }
+        </tbody>
+    </table>
+</div>
+

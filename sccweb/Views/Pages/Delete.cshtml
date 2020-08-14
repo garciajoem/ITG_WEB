@@ -1,0 +1,330 @@
+﻿@model itgweb.Models.Page
+
+@{
+    ViewBag.Title = @Html.DisplayNameFor(model => model.Title);
+    var modelId = @Html.DisplayFor(model => model.Id).ToString();
+    var vi = 0;
+    var si = 0;
+    var bi = 0;
+}
+<div class="row page-item page-item-header bg-img" data-target=".image-bg">
+    <div class="col-12">
+        @if (ViewBag.Img == true)
+        {
+            <img class="image-bg" src="~/Pages/RetrieveImage/@Html.DisplayFor(model => model.Id)" alt="" width="100%" />
+        }
+        else
+        {
+            <img class="image-bg" src="~/Content/Images/m-img-banner.jpg" alt="" width="100%" />
+        }
+        <div class="page-header page-header-title">
+            <h1>
+                @Html.DisplayFor(model => model.Title)
+            </h1>
+        </div>
+    </div>
+</div>
+<div class="row page-item page-item-bcrumbs">
+    <div class="col-12">
+        <ul class="bcrumbs">
+            <li><a href="/">Home</a></li>
+            @foreach (var item in ViewBag.SubMenus)
+            {
+                if (item.PageId != null)
+                {
+                    if (Convert.ToInt32(modelId) == item.PageId)
+                    {
+                        if (item.IsParent == 0)
+                        {
+                            foreach (var mpitem in ViewBag.SubMenus)
+                            {
+                                if (mpitem.Id == item.ParentId)
+                                {
+                                    if (mpitem.IsParent == 0)
+                                    {
+                                        foreach (var mppitem in ViewBag.SubMenus)
+                                        {
+                                            if (mppitem.Id == mpitem.ParentId)
+                                            {
+                                                if (mppitem.IsParent == 0)
+                                                {
+
+                                                    foreach (var mpppitem in ViewBag.SubMenus)
+                                                    {
+                                                        if (mpppitem.Id == mppitem.ParentId)
+                                                        {
+                                                            if (mpppitem.Id != 1 && mpppitem.Id != 2)
+                                                            {
+                                                                <li><a href="@(mpppitem.PageId)">@mpppitem.Name</a></li>
+                                                            }
+
+                                                        }
+                                                        break;
+                                                    }
+                                                    if (si == 0)
+                                                    {
+                                                        si++;
+                                                        <li><a href="@(mppitem.PageId)">@mppitem.Name</a></li>
+                                                    }
+
+                                                }
+                                                else
+                                                {
+                                                    if (mppitem.Id != 1 && mppitem.Id != 2)
+                                                    {
+                                                        <li><a href="@(mppitem.PageId)">@mppitem.Name</a></li>
+                                                    }
+
+                                                }
+
+                                            }
+                                        }
+                                        if (si <= 1)
+                                        {
+                                            si++;
+                                            <li><a href="@(mpitem.PageId)">@mpitem.Name</a> </li>
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        if (mpitem.Id != 1 && mpitem.Id != 2)
+                                        {
+                                            <li><a href="@(mpitem.PageId)">@mpitem.Name</a></li>
+                                        }
+                                    }
+                                }
+                            }
+                            if (si <= 2)
+                            {
+                                si++;
+                                <li><a href="@(item.PageId)">@item.Name</a></li>
+                            }
+
+                        }
+                        else
+                        {
+                            <li><a href="@(item.PageId)">@item.Name</a></li>
+                        }
+                    }
+                }
+
+            }
+        </ul>
+    </div>
+</div>
+<div class="row page-item page-item-content">
+    <div class="col-sm-3 page-content page-content-sidenav">
+        @if (ViewBag.ShowSum != 0)
+        {
+            <div class="page-sidenav page-sidenav-summary">
+                @Html.DisplayTextFor(model => model.Summary)
+            </div>
+        }
+        <div class="page-sidenav page-sidenav-nav">
+            <ul class="sidenav-group">
+                @if (ViewBag.HasChild == true)
+                {
+                    <li class="snav-item">
+                        <a>@Html.DisplayTextFor(model => model.Title) </a>
+                        <ul>
+                            @foreach (var childitems in ViewBag.ChildMenu)
+                            {
+                                <li class="snav-items snav-items-default">
+                                    @if (childitems.Type == 1)
+                                    {
+                                    <li class="snav-items snav-items-default">
+                                        <a href="@childitems.PageId">@childitems.Name</a>
+                                    </li>
+                                }
+                                else if (childitems.Type == 2)
+                                {
+                                    foreach (var pdfitem in ViewBag.PdfItems)
+                                    {
+                                        if (childitems.PdfId == pdfitem.Id)
+                                        {
+                                            int IsExternal = 0;
+                                            if (pdfitem.IsExternal != null)
+                                            {
+                                                if (pdfitem.IsExternal == 1)
+                                                {
+                                                    IsExternal = 1;
+                                                }
+                                            }
+                                            <li class="snav-items snav-items-default">
+                                                @if (pdfitem.FileName != null)
+                                                {
+                                                    <a href="~/Content/PdfFiles/@(pdfitem.FileName)" data-external="@IsExternal">@pdfitem.Title</a>
+                                                }
+                                                else
+                                                {
+                                                    <a href="@pdfitem.ExLink" data-external="@IsExternal">@pdfitem.Title</a>
+                                                }
+                                            </li>
+                                        }
+                                    }
+                                }
+                                else if (childitems.Type == 3)
+                                {
+                                    foreach (var linkitem in ViewBag.ExLinkItems)
+                                    {
+                                        if (childitems.ExtlinkId == linkitem.Id)
+                                        {
+                                            int IsExternal = 0;
+                                            if (linkitem.IsExternal != null)
+                                            {
+                                                if (linkitem.IsExternal == 1)
+                                                {
+                                                    IsExternal = 1;
+                                                }
+                                            }
+                                            <li class="snav-items snav-items-default">
+                                                <a href="@linkitem.UrlLink" data-external="@IsExternal">@linkitem.Title</a>
+                                            </li>
+                                        }
+                                    }
+                                }
+                            </li>
+
+                        }
+                        </ul>
+                        </li>
+
+                    }
+                @foreach (var parentmenu in ViewBag.ParentMenu)
+                {
+                    <li class="snav-item">
+                        <a>@parentmenu.Name</a>
+                        <ul>
+                            @foreach (var childitems in ViewBag.MenuItems)
+                            {
+                                if (childitems.Type == 1)
+                                {
+                                    <li class="snav-items snav-items-default">
+                                        <a href="@childitems.PageId">@childitems.Name</a>
+                                    </li>
+                                }
+                                else if (childitems.Type == 2)
+                                {
+                                    foreach (var pdfitem in ViewBag.PdfItems)
+                                    {
+                                        if (childitems.PdfId == pdfitem.Id)
+                                        {
+                                            int IsExternal = 0;
+                                            if (pdfitem.IsExternal != null)
+                                            {
+                                                if (pdfitem.IsExternal == 1)
+                                                {
+                                                    IsExternal = 1;
+                                                }
+                                            }
+                                            <li class="snav-items snav-items-default">
+                                                @if (pdfitem.FileName != null)
+                                                {
+                                                    <a href="~/Content/PdfFiles/@(pdfitem.FileName)" data-external="@IsExternal">@pdfitem.Title</a>
+                                                }
+                                                else
+                                                {
+                                                    <a href="@pdfitem.ExLink" data-external="@IsExternal">@pdfitem.Title</a>
+                                                }
+                                            </li>
+                                        }
+                                    }
+                                }
+                                else if (childitems.Type == 3)
+                                {
+                                    foreach (var linkitem in ViewBag.ExLinkItems)
+                                    {
+                                        if (childitems.ExtlinkId == linkitem.Id)
+                                        {
+                                            int IsExternal = 0;
+                                            if (linkitem.IsExternal != null)
+                                            {
+                                                if (linkitem.IsExternal == 1)
+                                                {
+                                                    IsExternal = 1;
+                                                }
+                                            }
+                                            <li class="snav-items snav-items-default">
+                                                <a href="@linkitem.UrlLink" data-external="@IsExternal">@linkitem.Title</a>
+                                            </li>
+                                        }
+                                    }
+                                }
+                            }
+                        </ul>
+                    </li>
+                }
+                </ul>
+            </div>
+        </div>
+        <div class="col-sm-9 page-content page-content-main">
+            @if (ViewBag.Subcontent[0] != "")
+            {
+                <div class="page-main page-main-text textcontent">
+                    @Html.DisplayTextFor(model => model.Maintext)
+
+                </div>
+                <div class="page-main page-plaintext"></div>
+                <div id="pageAcc" class="accordion page-accordion">
+                    <div class="card">
+
+                        @foreach (var item in ViewBag.Subcontent)
+                        {
+                            vi++;
+                            if (vi % 2 != 0)
+                            {
+                                var dbv = vi + 1;
+                                if (vi == 1)
+                                {
+                                    <div id="ch@(vi)" class="card-header">
+                                        <h4>@item</h4>
+                                        <span class="btn-cardbody" data-toggle="collapse" data-target="#collapse@(dbv)" data-body="@(dbv)" aria-expanded="true" aria-controls="collapse@(dbv)">
+                                            <i class="fa fa-chevron-circle-right" aria-hidden="true"></i>
+                                        </span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div id="ch@(vi)" class="card-header">
+                                        <h4>@item</h4>
+                                        <span class="btn-cardbody" data-toggle="collapse" data-target="#collapse@(dbv)" data-body="@(dbv)" aria-expanded="false" aria-controls="collapse@(dbv)">
+                                            <i class="fa fa-chevron-circle-right" aria-hidden="true"></i>
+                                        </span>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                var dhv = vi - 1;
+                                if (vi == 2)
+                                {
+                                    <div id="collapse@(vi)" class="collapse show collapse-body" data-header="#ch@(dhv)" data-parent="#pageAcc"><div class="card-body"></div><div class="temptext">@item</div></div>
+                                }
+                                else
+                                {
+                                    <div id="collapse@(vi)" class="collapse collapse-body" data-header="#ch@(dhv)" data-parent="#pageAcc"><div class="card-body"></div><div class="temptext">@item</div></div>
+                                }
+                            }
+                        }
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="page-main page-main-text textcontent">
+                    @Html.DisplayTextFor(model => model.Maintext)
+
+                </div>
+                <div class="page-main page-plaintext"></div>
+            }
+            @if (ViewBag.Userlogin == true)
+            {
+                <div class="page-main page-action">
+                    <p>
+                        @Html.ActionLink("Back to List", "Index")
+                    </p>
+                </div>
+            }
+        </div>
+    </div>

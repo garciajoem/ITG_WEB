@@ -1,0 +1,69 @@
+﻿@model IEnumerable<itgweb.ViewModel.PdfViewModel>
+@{
+    ViewBag.Title = "All Pdf";
+}
+@RenderPage("../Shared/PanelMenu.cshtml")
+    <div class="panel panel-body">
+        <h2>All Pdf</h2>
+        <hr />
+        <table class="table page page-main table-striped table-bordered table-sm">
+            <tbody>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Title)
+                    </th>
+                    <th>
+                        File Name
+                    </th>
+                    <th>
+                        Image
+                    </th>
+                    <th></th>
+                </tr>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Title)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FileName)
+                        </td>
+                        <td>
+                            <img src="~/Pdfs/RetrieveImage/@item.Id" alt="" width=200 />
+                        </td>
+                        <td>
+                            <div class="actions text-right">
+                                <a href="@Url.Action("Edit", new { id = item.Id })" class="ai btn btn-success">
+                                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                                </a>
+                                <a href="@Url.Action("Detail", new { id = item.Id })" class="ai btn btn-warning">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                </a>
+                                <a class="ai ai-expand btn btn-primary">
+                                    <i class="fa fa-list-ul" aria-hidden="true"></i>
+                                </a>
+                                <a href="@Url.Action("Delete", new { id = item.Id })" class="ai ai-trash btn btn-danger">
+                                    <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                            <div class="add-dtls" style="display: none">
+                                <table>
+                                    <tr>
+                                        <th>@Html.DisplayNameFor(model => model.Created)</th>
+                                        <th>@Html.DisplayNameFor(model => model.Author)</th>
+                                    </tr>
+                                    <tr>
+                                        <td>@Html.DisplayFor(modelItem => item.Created)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.Author)</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+

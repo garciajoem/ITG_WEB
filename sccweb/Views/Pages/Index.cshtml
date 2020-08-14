@@ -1,0 +1,81 @@
+﻿@model IEnumerable<itgweb.ViewModel.PageViewModel>
+@using PagedList;
+@using PagedList.Mvc;
+
+<!--
+    <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+-->
+@{
+    ViewBag.Title = "All Page";
+}
+@RenderPage("../Shared/PanelMenu.cshtml")
+<div class="panel panel-body">
+    <h2>All Pages</h2>
+    <hr />
+    <table id="dtPagination" class="table page page-main table-striped table-bordered table-sm">
+        <tbody>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.First().Summary)
+                </th>
+                <th>
+                    Image
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Summary)
+                    </td>
+                    <td>
+                        <img src="~/Pages/RetrieveImage/@item.Id" alt="" width=200 />
+                    </td>
+                    <td>
+                        <div class="actions text-right">
+                            <a href="@Url.Action("Edit", new { id = item.Id })" class="ai btn btn-success">
+                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                            </a>
+                            <a href="@Url.Action("Detail", new { id = item.Id })" class="ai btn btn-warning" target="_blank">
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                            </a>
+                            <a class="ai ai-expand btn btn-primary">
+                                <i class="fa fa-list-ul" aria-hidden="true"></i>
+                            </a>
+                            <a href="@Url.Action("Delete", new { id = item.Id })" class="ai ai-trash btn btn-danger">
+                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                        <div class="add-dtls" style="display: none">
+                            <table>
+                                <tr>
+                                    <!--<th>@Html.DisplayNameFor(model => model.Maintext)</th>-->
+                                    <th>@Html.DisplayNameFor(model => model.Created)</th>
+                                    <th>@Html.DisplayNameFor(model => model.MetaDescription)</th>
+                                    <th>@Html.DisplayNameFor(model => model.MetaKeywords)</th>
+                                    <th>@Html.DisplayNameFor(model => model.PageUrl)</th>
+                                </tr>
+                                <tr>
+                                    <!--<td>@Html.DisplayFor(modelItem => item.Maintext)</td>-->
+                                    <td>@Html.DisplayFor(modelItem => item.Created)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.MetaDescription)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.MetaKeywords)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.PageUrl)</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>

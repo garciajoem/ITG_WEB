@@ -1,0 +1,1443 @@
+﻿@model itgweb.ViewModel.MenugroupViewModel
+@{
+    ViewBag.Title = "Menu Groups";
+    var menuId = 0;
+    var si = 0;
+    var ssi = 0;
+    var sssi = 0;
+    var ssssi = 0;
+    var mci = 0;
+}
+
+
+@RenderPage("../Shared/PanelMenu.cshtml")
+<div class="panel panel-body">
+    <div class="row">
+        <div class="col-8">
+            <h2>Menu Groups</h2>
+        </div>
+        <div class="col-4 text-right">
+            <button type="button" id="createMenuGroup" class="btn btn-success" data-toggle="modal" data-target="#CreateContent">
+                Create Top Level Menu
+            </button>
+        </div>
+    </div>
+    <hr />
+    <div class="page page-mg">
+        <div class="row">
+            @foreach (var item in ViewBag.MenuParent)
+            {
+                menuId = item.Id;
+                var stId = item.Id.ToString();
+                <div class="col-sm-12">
+                    <div class="accordion pmg-accordion">
+                        <ul id="pmgMain-@(item.Id)" class="pmg-main card" data-parentId="@(item.Id)">
+                            <li id="pmgAccHead-@(item.Id)" class="pmg-parent d-flex card-header">
+                                <h4 class="pmgp pmgp-title">
+                                    @item.Name
+                                </h4>
+                                <div class="pmgp pmgp-actions">
+                                    @if (item.Type == 1)
+                                    {
+
+                                        <a href="~/Offices/@(item.PageId)" class="ai btn btn-sm ai-view ai-page btn-warning">
+                                            <i class="fa fa-file-text" aria-hidden="true"></i>
+                                        </a>
+                                        <a href="~/Pages/Edit/@(item.PageId)" class="ai btn btn-sm ai-edit btn-success">
+                                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                                        </a>
+                                    }
+                                    <a class="ai ai-expand btn btn-sm  btn-primary" data-toggle="collapse" data-target="#pmgAcc-@(item.Id)" aria-expanded="true" aria-controls="@(item.Name)-@(item.Id)">
+                                        <i class="fa fa-list-ul" aria-hidden="true"></i>
+                                    </a>
+                                    @if (item.Id != 1 && item.Id != 2)
+                                    {
+                                        <a href="~/Menugroups/Delete/@(item.Id)" class="ai ai-trash btn btn-sm btn-danger">
+                                            <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                        </a>
+                                    }
+
+
+                                </div>
+                            </li>
+                            <li id="pmgAcc-@(item.Id)" class="collapse-body collapse pmg-child" data-header="pmgAccHead-@(item.Id)">
+                                <ul id="sortable-@(item.Id)" class="pmg pchild menusort sort-@(item.Id)" data-sortclass=".sort-@(item.Id)" data-menuitemid="@(item.Id)">
+
+                                    @foreach (var subitem in ViewData[stId])
+                                    {
+                                        si++;
+                                        mci++;
+                                        var stFirstId = subitem.Id.ToString();
+                                        <li id="menuItem-@(subitem.Id)" class="pmg-child card" data-order="@(si)" data-parentid="@(subitem.ParentId)" data-menuid="@(subitem.Id)" data-count="@(mci)">
+                                            <div id="childAccHead-@(subitem.Id)" class="pmg-parent d-flex card-header">
+                                                <!--<a class="btn btn-sm btn-primary btn-move"><i class="fa fa-arrows" aria-hidden="true"></i></a>-->
+                                                <h4 class="pmgp pmgp-title">
+                                                    @subitem.Name
+                                                </h4>
+                                                <div class="pmgp pmgp-actions">
+                                                    @if (subitem.Type == 1)
+                                                    {
+
+                                                        <a href="~/Offices/@(subitem.PageId)" class="ai btn btn-sm ai-view ai-page btn-warning">
+                                                            <i class="fa fa-file-text" aria-hidden="true"></i>
+                                                        </a>
+                                                        <a href="~/Pages/Edit/@(subitem.PageId)" class="ai btn btn-sm ai-edit btn-success">
+                                                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                        </a>
+                                                    }
+                                                    else if (subitem.Type == 2)
+                                                    {
+                                                        foreach (var pdfId in ViewBag.PdfItemLists)
+                                                        {
+                                                            if (subitem.PdfId == pdfId.Id)
+                                                            {
+                                                                if (pdfId.FileName != null)
+                                                                {
+                                                                    <a href="~/Content/PdfFiles/@pdfId.FileName" class="ai btn btn-sm ai-view ai-pdf btn-success" target="_blank">
+                                                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                                                    </a>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <a href="@pdfId.ExLink" class="ai btn btn-sm ai-view ai-pdf btn-success" target="_blank">
+                                                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                                                    </a>
+                                                                }
+
+                                                                break;
+                                                            }
+                                                        }
+                                                        <a href="~/Pdfs/Edit/@(subitem.PdfId)" class="ai btn btn-sm ai-edit btn-success">
+                                                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                        </a>
+                                                    }
+                                                    else if (subitem.Type == 3)
+                                                    {
+                                                        foreach (var linkId in ViewBag.ExLinkItemLists)
+                                                        {
+                                                            if (subitem.ExtlinkId == linkId.Id)
+                                                            {
+                                                                <a href="@linkId.UrlLink" class="ai btn btn-sm ai-view ai-link btn-success" target="_blank">
+                                                                    <i class="fa fa-link" aria-hidden="true"></i>
+                                                                </a>
+
+                                                                break;
+                                                            }
+                                                        }
+                                                        <a href="~/Extlinks/Edit/@(subitem.ExtlinkId)" class="ai btn btn-sm ai-edit btn-success">
+                                                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                        </a>
+                                                    }
+
+                                                    @if (item.Id != 1 && subitem.Type != 3 && subitem.Type != 2)
+                                                    {
+                                                        <a class="ai ai-expand btn btn-sm  btn-primary" data-toggle="collapse" data-target="#childAcc-@(subitem.Id)" aria-expanded="true" aria-controls="@(subitem.Name)-@(subitem.Id)">
+                                                            <i class="fa fa-list-ul" aria-hidden="true"></i>
+                                                        </a>
+                                                    }
+
+                                                    <a href="~/Menugroups/Delete/@(subitem.Id)" class="ai ai-trash btn btn-sm btn-danger">
+                                                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                                    </a>
+
+                                                </div>
+                                            </div>
+                                            <ul id="childAcc-@(subitem.Id)" class="collapse-body collapse pchild pmg pmg-child pmg-subchild menusort sort-@(item.Id)" data-sortclass=".sort-@(item.Id)" data-header="#childAccHead-@(subitem.Id)" data-menuitemid="@(subitem.Id)">
+                                                @foreach (var subsubitem in ViewData[stFirstId])
+                                                {
+                                                    ssi++;
+                                                    mci++;
+                                                    var stSecondId = subsubitem.Id.ToString();
+                                                    <li id="menuItem-@(subsubitem.Id)" class="pmg-child card" data-order="@(ssi)" data-parentid="@(subsubitem.ParentId)" data-menuid="@(subsubitem.Id)" data-count="@(mci)">
+                                                        <div id="subChildAccHead-@(subsubitem.Id)" class="pmg-parent d-flex card-header">
+                                                            <!--<a class="btn btn-sm btn-primary btn-move"><i class="fa fa-arrows" aria-hidden="true"></i></a>-->
+                                                            <h4 class="pmgp pmgp-title">
+                                                                @subsubitem.Name
+                                                            </h4>
+                                                            <div class="pmgp pmgp-actions">
+                                                                @if (subsubitem.Type == 1)
+                                                                {
+
+                                                                    <a href="~/Offices/@(subsubitem.PageId)" class="ai btn btn-sm ai-view ai-page btn-warning">
+                                                                        <i class="fa fa-file-text" aria-hidden="true"></i>
+                                                                    </a>
+                                                                    <a href="~/Pages/Edit/@(subsubitem.PageId)" class="ai btn btn-sm ai-edit btn-success">
+                                                                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                                    </a>
+                                                                }
+                                                                else if (subsubitem.Type == 2)
+                                                                {
+                                                                    foreach (var pdfId in ViewBag.PdfItemLists)
+                                                                    {
+                                                                        if (subsubitem.PdfId == pdfId.Id)
+                                                                        {
+                                                                            if (pdfId.FileName != null)
+                                                                            {
+                                                                                <a href="~/Content/PdfFiles/@pdfId.FileName" class="ai btn btn-sm ai-view ai-pdf btn-success" target="_blank">
+                                                                                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                                                                </a>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <a href="@pdfId.ExLink" class="ai btn btn-sm ai-view ai-pdf btn-success" target="_blank">
+                                                                                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                                                                </a>
+                                                                            }
+
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                    <a href="~/Pdfs/Edit/@(subsubitem.PdfId)" class="ai btn btn-sm ai-edit btn-success">
+                                                                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                                    </a>
+                                                                }
+                                                                else if (subsubitem.Type == 3)
+                                                                {
+                                                                    foreach (var linkId in ViewBag.ExLinkItemLists)
+                                                                    {
+                                                                        if (subsubitem.ExtlinkId == linkId.Id)
+                                                                        {
+                                                                            <a href="@linkId.UrlLink" class="ai btn btn-sm ai-view ai-link btn-success" target="_blank">
+                                                                                <i class="fa fa-link" aria-hidden="true"></i>
+                                                                            </a>
+
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                    <a href="~/Extlinks/Edit/@(subsubitem.ExtlinkId)" class="ai btn btn-sm ai-edit btn-success">
+                                                                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                                    </a>
+                                                                }
+                                                                @if (subsubitem.Type != 3 && subsubitem.Type != 2)
+                                                                {
+                                                                    <a class="ai ai-expand btn btn-sm  btn-primary" data-toggle="collapse" data-target="#subChildAcc-@(subsubitem.Id)" aria-expanded="true" aria-controls="@(subsubitem.Name)-@(subsubitem.Id)">
+                                                                        <i class="fa fa-list-ul" aria-hidden="true"></i>
+                                                                    </a>
+                                                                }
+
+                                                                <a href="~/Menugroups/Delete/@(subsubitem.Id)" class="ai ai-trash btn btn-sm btn-danger">
+                                                                    <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                                                </a>
+
+                                                            </div>
+                                                        </div>
+                                                        <ul id="subChildAcc-@(subsubitem.Id)" class="collapse-body collapse pchild pmg pmg-child pmg-subsubchild menusort sort-@(item.Id)" data-sortclass=".sort-@(item.Id)" data-header="#subChildAccHead-@(subsubitem.Id)" data-menuitemid="@(subsubitem.Id)">
+                                                            @foreach (var subsubsubitem in ViewData[stSecondId])
+                                                            {
+                                                                sssi++;
+                                                                mci++;
+                                                                var stThirdId = subsubsubitem.Id.ToString();
+                                                                <li id="menuItem-@(subsubsubitem.Id)" class="pmg-child card" data-order="@(sssi)" data-parentid="@(subsubsubitem.ParentId)" data-menuid="@(subsubsubitem.Id)" data-count="@(mci)">
+                                                                    <div id="subSubChildAccHead-@(subsubsubitem.Id)" class="pmg-parent d-flex card-header">
+                                                                        <!--<a class="btn btn-sm btn-primary btn-move"><i class="fa fa-arrows" aria-hidden="true"></i></a>-->
+
+                                                                        <h4 class="pmgp pmgp-title">
+                                                                            @subsubsubitem.Name
+                                                                        </h4>
+                                                                        <div class="pmgp pmgp-actions">
+                                                                            @if (subsubsubitem.Type == 1)
+                                                                            {
+
+                                                                                <a href="~/Offices/@(subsubsubitem.PageId)" class="ai btn btn-sm ai-view ai-page btn-warning">
+                                                                                    <i class="fa fa-file-text" aria-hidden="true"></i>
+                                                                                </a>
+                                                                                <a href="~/Pages/Edit/@(subsubsubitem.PageId)" class="ai btn btn-sm ai-edit btn-success">
+                                                                                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                                                </a>
+                                                                            }
+                                                                            else if (subsubsubitem.Type == 2)
+                                                                            {
+                                                                                foreach (var pdfId in ViewBag.PdfItemLists)
+                                                                                {
+                                                                                    if (subsubsubitem.PdfId == pdfId.Id)
+                                                                                    {
+                                                                                        if (pdfId.FileName != null)
+                                                                                        {
+                                                                                            <a href="~/Content/PdfFiles/@pdfId.FileName" class="ai btn btn-sm ai-view ai-pdf btn-success" target="_blank">
+                                                                                                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                                                                            </a>
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            <a href="@pdfId.ExLink" class="ai btn btn-sm ai-view ai-pdf btn-success" target="_blank">
+                                                                                                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                                                                            </a>
+                                                                                        }
+
+                                                                                        break;
+                                                                                    }
+                                                                                }
+                                                                                <a href="~/Pdfs/Edit/@(subsubsubitem.PdfId)" class="ai btn btn-sm ai-edit btn-success">
+                                                                                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                                                </a>
+                                                                            }
+                                                                            else if (subsubsubitem.Type == 3)
+                                                                            {
+                                                                                foreach (var linkId in ViewBag.ExLinkItemLists)
+                                                                                {
+                                                                                    if (subsubsubitem.ExtlinkId == linkId.Id)
+                                                                                    {
+                                                                                        <a href="@linkId.UrlLink" class="ai btn btn-sm ai-view ai-link btn-success" target="_blank">
+                                                                                            <i class="fa fa-link" aria-hidden="true"></i>
+                                                                                        </a>
+
+                                                                                        break;
+                                                                                    }
+                                                                                }
+                                                                                <a href="~/Extlinks/Edit/@(subsubsubitem.ExtlinkId)" class="ai btn btn-sm ai-edit btn-success">
+                                                                                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                                                </a>
+                                                                            }
+                                                                            @if (subsubsubitem.Type != 3 && subsubsubitem.Type != 2)
+                                                                            {
+                                                                                <a class="ai ai-expand btn btn-sm  btn-primary" data-toggle="collapse" data-target="#subChildAcc-@(subsubsubitem.Id)" aria-expanded="true" aria-controls="@(subsubsubitem.Name)-@(subsubsubitem.Id)">
+                                                                                    <i class="fa fa-list-ul" aria-hidden="true"></i>
+                                                                                </a>
+                                                                            }
+                                                                            <a href="~/Menugroups/Delete/@(subsubsubitem.Id)" class="ai ai-trash btn btn-sm btn-danger">
+                                                                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                                    <ul id="subChildAcc-@(subsubsubitem.Id)" class="collapse-body collapse pchild pmg pmg-child pmg-subsubchild menusort sort-@(item.Id)" data-sortclass=".sort-@(item.Id)" data-header="#subChildAccHead-@(subsubsubitem.Id)" data-menuitemid="@(subsubsubitem.Id)">
+                                                                        @foreach (var subsubsubsubitem in ViewData[stThirdId])
+                                                                        {
+                                                                            var stFourthId = subsubsubsubitem.Id.ToString();
+                                                                            <li id="menuItem-@(subsubsubsubitem.Id)" class="pmg-child card" data-order="@(ssssi)" data-parentid="@(subsubsubsubitem.ParentId)" data-menuid="@(subsubsubsubitem.Id)" data-count="@(mci)">
+                                                                                <div id="subSubSubChildAccHead-@(subsubsubsubitem.Id)" class="pmg-parent d-flex card-header">
+                                                                                    <h4 class="pmgp pmgp-title">
+                                                                                        @subsubsubsubitem.Name
+                                                                                    </h4>
+                                                                                    <div class="pmgp pmgp-actions">
+                                                                                        @if (subsubsubsubitem.Type == 1)
+                                                                                        {
+                                                                                            <a href="~/Offices/@(subsubsubsubitem.PageId)" class="ai btn btn-sm ai-view ai-page btn-warning">
+                                                                                                <i class="fa fa-file-text" aria-hidden="true"></i>
+                                                                                            </a>
+                                                                                            <a href="~/Pages/Edit/@(subsubsubsubitem.PageId)" class="ai btn btn-sm ai-edit btn-success">
+                                                                                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                                                            </a>
+                                                                                        }
+                                                                                        else if (subsubsubsubitem.Type == 2)
+                                                                                        {
+                                                                                            foreach (var pdfId in ViewBag.PdfItemLists)
+                                                                                            {
+                                                                                                if (subsubsubsubitem.PdfId == pdfId.Id)
+                                                                                                {
+                                                                                                    if (pdfId.FileName != null)
+                                                                                                    {
+                                                                                                        <a href="~/Content/PdfFiles/@pdfId.FileName" class="ai btn btn-sm ai-view ai-pdf btn-success" target="_blank">
+                                                                                                            <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                                                                                        </a>
+                                                                                                    }
+                                                                                                    else
+                                                                                                    {
+                                                                                                        <a href="@pdfId.ExLink" class="ai btn btn-sm ai-view ai-pdf btn-success" target="_blank">
+                                                                                                            <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                                                                                        </a>
+                                                                                                    }
+
+                                                                                                    break;
+                                                                                                }
+                                                                                            }
+
+                                                                                            <a href="~/Pdfs/Edit/@(subsubsubsubitem.PdfId)" class="ai btn btn-sm ai-edit btn-success">
+                                                                                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                                                            </a>
+                                                                                        }
+                                                                                        else if (subsubsubsubitem.Type == 3)
+                                                                                        {
+                                                                                            foreach (var linkId in ViewBag.ExLinkItemLists)
+                                                                                            {
+                                                                                                if (subsubsubsubitem.ExtlinkId == linkId.Id)
+                                                                                                {
+                                                                                                    <a href="@linkId.UrlLink" class="ai btn btn-sm ai-view ai-link btn-success" target="_blank">
+                                                                                                        <i class="fa fa-link" aria-hidden="true"></i>
+                                                                                                    </a>
+
+                                                                                                    break;
+                                                                                                }
+                                                                                            }
+
+                                                                                            <a href="~/Extlinks/Edit/@(subsubsubsubitem.ExtlinkId)" class="ai btn btn-sm ai-edit btn-success">
+                                                                                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                                                            </a>
+                                                                                        }
+
+                                                                                        @if (subsubsubsubitem.Type != 3 && subsubsubsubitem.Type != 2)
+                                                                                        {
+                                                                                            <a class="ai ai-expand btn btn-sm  btn-primary" data-toggle="collapse" data-target="#subSubChildAcc-@(subsubsubsubitem.Id)" aria-expanded="true" aria-controls="@(subsubsubsubitem.Name)-@(subsubsubsubitem.Id)">
+                                                                                                <i class="fa fa-list-ul" aria-hidden="true"></i>
+                                                                                            </a>
+                                                                                        }
+                                                                                        <a href="~/Menugroups/Delete/@(subsubsubsubitem.Id)" class="ai ai-trash btn btn-sm btn-danger">
+                                                                                            <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                                                                        </a>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <ul id="subSubChildAcc-@(subsubsubsubitem.Id)" class="collapse-body collapse pchild pmg pmg-child pmg-subsubchild menusort sort-@(item.Id)" data-sortclass=".sort-@(item.Id)" data-header="#subSubSubChildAccHead-@(subsubsubsubitem.Id)" data-menuitemid="@(subsubsubsubitem.Id)">
+                                                                                    @foreach (var subsubsubsubsubitem in ViewData[stFourthId])
+                                                                                    {
+                                                                                        <li id="menuItem-@(subsubsubsubsubitem.Id)" class="pmg-child card" data-order="@(ssssi)" data-parentid="@(subsubsubsubsubitem.ParentId)" data-menuid="@(subsubsubsubsubitem.Id)" data-count="@(mci)">
+                                                                                            <div id="subSubSubSubChildAccHead-@(subsubsubsubsubitem.Id)" class="pmg-parent d-flex card-header">
+                                                                                                <h4 class="pmgp pmgp-title">
+                                                                                                    @subsubsubsubsubitem.Name
+                                                                                                </h4>
+                                                                                                <div class="pmgp pmgp-actions">
+                                                                                                    @if (subsubsubsubsubitem.Type == 1)
+                                                                                                    {
+                                                                                                        <a href="~/Offices/@(subsubsubsubsubitem.PageId)" class="ai btn btn-sm ai-view ai-page btn-warning">
+                                                                                                            <i class="fa fa-file-text" aria-hidden="true"></i>
+                                                                                                        </a>
+                                                                                                        <a href="~/Pages/Edit/@(subsubsubsubsubitem.PageId)" class="ai btn btn-sm ai-edit btn-success">
+                                                                                                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                                                                        </a>
+                                                                                                    }
+                                                                                                    else if (subsubsubsubsubitem.Type == 2)
+                                                                                                    {
+                                                                                                        foreach (var pdfId in ViewBag.PdfItemLists)
+                                                                                                        {
+                                                                                                            if (subsubsubsubsubitem.PdfId == pdfId.Id)
+                                                                                                            {
+                                                                                                                if (pdfId.FileName != null)
+                                                                                                                {
+                                                                                                                    <a href="~/Content/PdfFiles/@pdfId.FileName" class="ai btn btn-sm ai-view ai-pdf btn-success" target="_blank">
+                                                                                                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                                                                                                    </a>
+                                                                                                                }
+                                                                                                                else
+                                                                                                                {
+                                                                                                                    <a href="@pdfId.ExLink" class="ai btn btn-sm ai-view ai-pdf btn-success" target="_blank">
+                                                                                                                        <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                                                                                                    </a>
+                                                                                                                }
+
+                                                                                                                break;
+                                                                                                            }
+                                                                                                        }
+
+                                                                                                        <a href="~/Pdfs/Edit/@(subsubsubsubsubitem.PdfId)" class="ai btn btn-sm ai-edit btn-success">
+                                                                                                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                                                                        </a>
+                                                                                                    }
+                                                                                                    else if (subsubsubsubsubitem.Type == 3)
+                                                                                                    {
+                                                                                                        foreach (var linkId in ViewBag.ExLinkItemLists)
+                                                                                                        {
+                                                                                                            if (subsubsubsubsubitem.ExtlinkId == linkId.Id)
+                                                                                                            {
+                                                                                                                <a href="@linkId.UrlLink" class="ai btn btn-sm ai-view ai-link btn-success" target="_blank">
+                                                                                                                    <i class="fa fa-link" aria-hidden="true"></i>
+                                                                                                                </a>
+
+                                                                                                                break;
+                                                                                                            }
+                                                                                                        }
+
+                                                                                                        <a href="~/Extlinks/Edit/@(subsubsubsubsubitem.ExtlinkId)" class="ai btn btn-sm ai-edit btn-success">
+                                                                                                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                                                                        </a>
+                                                                                                    }
+
+                                                                                                    <a href="~/Menugroups/Delete/@(subsubsubsubsubitem.Id)" class="ai ai-trash btn btn-sm btn-danger">
+                                                                                                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                                                                                    </a>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </li>
+                                                                                    }
+                                                                                    <div>
+                                                                                        <button type="button" id="addMenuChild" class="btn btn-sm btn-primary btnAddSubPage" data-toggle="modal" data-target="#AddSubMenuItem" data-menuid="@(subsubsubsubitem.Id)" data-modalmenu="0">
+                                                                                            Add Child
+                                                                                        </button>
+                                                                                    </div>
+                                                                                </ul>
+                                                                            </li>
+                                                                        }
+                                                                        <div>
+                                                                            <button type="button" id="addMenuChild" class="btn btn-sm btn-primary btnAddSubPage" data-toggle="modal" data-target="#AddSubMenuItem" data-menuid="@(subsubsubitem.Id)" data-modalmenu="0">
+                                                                                Add Child
+                                                                            </button>
+                                                                        </div>
+                                                                    </ul>
+                                                                </li>
+                                                            }
+                                                            <div>
+                                                                <button type="button" id="addMenuChild" class="btn btn-sm btn-primary btnAddSubPage" data-toggle="modal" data-target="#AddSubMenuItem" data-menuid="@(subsubitem.Id)" data-modalmenu="0">
+                                                                    Add Child
+                                                                </button>
+                                                            </div>
+                                                        </ul>
+                                                    </li>
+                                                }
+                                                <div>
+                                                    <button type="button" id="addMenuChild" class="btn btn-sm btn-primary btnAddSubPage" data-toggle="modal" data-target="#AddSubMenuItem" data-menuid="@(subitem.Id)" data-modalmenu="0">
+                                                        Add Child
+                                                    </button>
+                                                </div>
+                                            </ul>
+                                        </li>
+                                    }
+
+
+                                </ul>
+                                <button type="button" id="addMenuChild" class="btn btn-sm btn-primary btnAddSubPage" data-toggle="modal" data-target="#AddSubMenuItem" data-menuid="@(item.Id)" data-modalmenu="1">
+                                    Add Sub Item
+                                </button> 
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            }
+        </div>
+        <!-- Modal Add SubMenu Item-->
+        <div class="modal fade modal-create-content" id="AddSubMenuItem" tabindex="-1" role="dialog" aria-labelledby="addMenuChild" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="MenuItemChild">Create Child Content</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="SubContentAdmin" class="content-header admin-main">
+                            <div class="row menu-default">
+                                <div class="col-sm-6">
+                                    <div class="admin-bl admin-bl-pages d-flex bl-icon-text  block collapse-slide" data-toggle="collapse" data-target="#SubContentPage" data-parentid="#SubContentAdmin" aria-expanded="false" aria-controls="SubContentPage">
+                                        <div class="abl-icon">
+                                            <span class="bg-img" data-target=".icon-bl">
+                                                <img class="icon-bl" src="~/Content/Images/icon-page.png" />
+                                            </span>
+                                        </div>
+                                        <div class="abl-text">
+                                            <h3>Page</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="admin-bl admin-bl-pdf d-flex bl-icon-text block collapse-slide" data-toggle="collapse" data-target="#SubContentPdf" data-parentid="#SubContentAdmin" aria-expanded="false" aria-controls="SubContentPdf)">
+                                        <div class="abl-icon">
+                                            <span class="bg-img" data-target=".icon-bl">
+                                                <img class="icon-bl" src="~/Content/Images/icon-pdf.png" />
+                                            </span>
+                                        </div>
+                                        <div class="abl-text">
+                                            <h3>Pdf</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row menu-default">
+                                <div class="col-sm-6">
+                                    <div class="admin-bl admin-bl-ext-links d-flex bl-icon-text block collapse-slide" data-toggle="collapse" data-target="#SubContentLink" data-parentid="#SubContentAdmin" aria-expanded="false" aria-controls="SubContentLink">
+                                        <div class="abl-icon">
+                                            <span class="bg-img" data-target=".icon-bl">
+                                                <img class="icon-bl" src="~/Content/Images/icon-link.png" />
+                                            </span>
+                                        </div>
+                                        <div class="abl-text">
+                                            <h3>URL</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="admin-bl admin-bl-ext-links d-flex bl-icon-text block collapse-slide" data-toggle="collapse" data-target="#SubContentMenu" data-parentid="#SubContentAdmin" aria-expanded="false" aria-controls="SubContentMenu">
+                                        <div class="abl-icon">
+                                            <span class="bg-img" data-target=".icon-bl">
+                                                <img class="icon-bl" src="~/Content/Images/icon-menu.png" />
+                                            </span>
+                                        </div>
+                                        <div class="abl-text">
+                                            <h3>Menu Item <span>( for existing pages )</span></h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center menu-default">
+                                <div class="col-sm-6">
+                                    <div class="admin-bl admin-bl-modal bl-icon-text block collapse-slide" data-toggle="collapse" data-target="#SubContentModal" data-parentid="#SubContentAdmin" aria-expanded="false" aria-controls="SubContentModal">
+                                        <div class="d-flex">
+                                            <div class="abl-icon">
+                                                <span class="bg-img" data-target=".icon-bl">
+                                                    <img class="icon-bl" src="~/Content/Images/icon-page.png" />
+                                                </span>
+                                            </div>
+                                            <div class="abl-text">
+                                                <h3>Modal</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="menu-quick-links" style="display: none;">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="admin-bl admin-bl-pdf d-flex bl-icon-text block collapse-slide" data-toggle="collapse" data-target="#SubContentPdf" data-parentid="#SubContentAdmin" aria-expanded="false" aria-controls="SubContentPdf">
+                                            <div class="abl-icon">
+                                                <span class="bg-img" data-target=".icon-bl">
+                                                    <img class="icon-bl" src="~/Content/Images/icon-pdf.png" />
+                                                </span>
+                                            </div>
+                                            <div class="abl-text">
+                                                <h3>Pdf</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="admin-bl admin-bl-ext-links d-flex bl-icon-text block collapse-slide" data-toggle="collapse" data-target="#SubContentLink" data-parentid="#SubContentAdmin" aria-expanded="false" aria-controls="SubContentLink">
+                                            <div class="abl-icon">
+                                                <span class="bg-img" data-target=".icon-bl">
+                                                    <img class="icon-bl" src="~/Content/Images/icon-link.png" />
+                                                </span>
+                                            </div>
+                                            <div class="abl-text">
+                                                <h3>URL</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content-body">
+                            <div id="SubContentPage" class="content-collapse collapse">
+                                <div class="content-subheader d-flex justify-content-between">
+                                    <h4>Page</h4>
+                                    <button type="button" class="btn btn-default btn-sm block collapse-slide" data-parentid="#SubContentPage" data-toggleblock="#SubContentAdmin">Back to Types</button>
+                                </div>
+                                <hr />
+                                @using (Html.BeginForm("Index", "Menugroups", null, FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-page form-menu-create" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="menutype" value="6" />
+                                    <input class="submenuid" type="hidden" name="menuid" value="" />
+                                    <input class="submenuparent" type="hidden" name="menuparent" value="" />
+                                    <input type="hidden" name="PageModel_Maintext" value="" />
+                                    <input type="hidden" name="PageId" value="@ViewBag.PageId" />
+                                    <div class="form-horizontal">
+                                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                        <div class="row form-group">
+                                            @Html.Label("Image Header", new { @class = "control-label col-md-3" })
+                                            <div class="col-md-9">
+                                                <div class="row">
+                                                    <div class="col-md-8">
+                                                        <input type="file" id="upload" name="fileImg" onchange="fileCheck(this)" />
+                                                    </div>
+                                                    <div class="col-md-4">
+
+                                                        @Html.LabelFor(model => model.PageModel.Created, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.PageModel.Created, new { htmlAttributes = new { @class = "form-control datepicker" }, type = "date" })
+                                                        @Html.ValidationMessageFor(model => model.PageModel.Created, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            @Html.LabelFor(model => model.PageModel.Title, htmlAttributes: new { @class = "control-label col-md-3" })
+                                            <div class="col-md-9">
+                                                @Html.EditorFor(model => model.PageModel.Title, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.PageModel.Title, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                        <div class="row form-group">
+                                            @Html.LabelFor(model => model.PageModel.Summary, htmlAttributes: new { @class = "control-label col-md-3" })
+                                            <div class="col-md-9">
+                                                @Html.EditorFor(model => model.PageModel.Summary, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.PageModel.Summary, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div id="form-multiplecontent" class="form-group form-multipletext" data-content="0">
+                                            <div class="row">
+                                                <div class="control-label col-md-3">
+                                                    <label for="multipletext">Multiple Content</label>
+                                                    <!--<button class="btn btn-primary btn-sm collapse-hidden" type="button" data-target="#form-singlecontent" data-parentid="#form-multiplecontent" aria-expanded="false" aria-controls="form-multipletext">Maintext</button>-->
+                                                </div>
+                                                <div class="col-md-9">
+                                                    <div class="sub-container-duplicate">
+                                                        <div id="fmi-1" class="fm-item" data-fmitem="1">
+                                                            <input type="text" class="form-control fmi fmi-title" name="subcontent" placeholder="Add Subtitle" data-subid="1" />
+                                                            <textarea id="textEditor1" class="form-control texteditor  fmi fmi-content" name="subcontent" data-conid="1" rows="3" placeholder="Add Subcontent"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <button type="button" class="btn btn-success btn-sm btn-duplicate" data-container=".sub-container-duplicate"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row form-group">
+                                            @Html.LabelFor(model => model.PageModel.Publish, htmlAttributes: new { @class = "control-label col-md-3" })
+                                            <div class="col-md-9">
+                                                <span class="pub -yes">
+                                                    <span class="pl">Yes</span>
+                                                    @Html.RadioButtonFor(model => model.PageModel.Publish, "1")
+                                                </span>
+                                                <span class="pub -no">
+                                                    <span class="pl">No</span>
+                                                    @Html.RadioButtonFor(model => model.PageModel.Publish, "0")
+                                                </span>
+
+
+                                                @Html.ValidationMessageFor(model => model.PageModel.Publish, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div id="sub-adv-set" class="collapse multi-collapse">
+                                            <div class="row form-group">
+                                                @Html.LabelFor(model => model.PageModel.MetaKeywords, "Meta Keywords", htmlAttributes: new { @class = "control-label col-md-3" })
+                                                <div class="col-md-9">
+                                                    @Html.EditorFor(model => model.PageModel.MetaKeywords, new { htmlAttributes = new { @class = "form-control" } })
+                                                    @Html.ValidationMessageFor(model => model.PageModel.MetaKeywords, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                @Html.LabelFor(model => model.PageModel.MetaDescription, "Meta Description", htmlAttributes: new { @class = "control-label col-md-3" })
+                                                <div class="col-md-9">
+                                                    @Html.EditorFor(model => model.PageModel.MetaDescription, new { htmlAttributes = new { @class = "form-control" } })
+                                                    @Html.ValidationMessageFor(model => model.PageModel.MetaDescription, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                            <div class="row form-group">
+                                                @Html.LabelFor(model => model.PageModel.AuthorId, "Author", htmlAttributes: new { @class = "control-label col-md-3" })
+                                                <div class="col-md-9">
+                                                    @Html.EditorFor(model => model.PageModel.AuthorId, new { htmlAttributes = new { @class = "form-control" } })
+                                                    @Html.ValidationMessageFor(model => model.PageModel.AuthorId, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                @Html.LabelFor(model => model.PageModel.PageUrl, "Page URL", htmlAttributes: new { @class = "control-label col-md-3" })
+                                                <div class="col-md-9">
+                                                    @Html.EditorFor(model => model.PageModel.PageUrl, new { htmlAttributes = new { @class = "form-control" } })
+                                                    @Html.ValidationMessageFor(model => model.PageModel.PageUrl, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-offset-2 col-md-10 text-right">
+                                                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#sub-adv-set" aria-expanded="false" aria-controls="sub-adv-set">Advance</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <input type="submit" value="Create" class="btn btn-success" />
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div id="SubContentPdf" class="content-collapse collapse">
+                                <div class="content-subheader d-flex justify-content-between">
+                                    <h4>Pdf</h4>
+                                    <button type="button" class="btn btn-default btn-sm block collapse-slide" data-parentid="#SubContentPdf" data-toggleblock="#SubContentAdmin">Back to Types</button>
+                                </div>
+                                <hr />
+                                <div id="SubContentOptionsPdf" class="content-options content-options-pdf">
+                                    <ul class="panel panel-menu d-flex flex-row">
+                                        <li class="option option-external" data-target="#SubOptExt" data-toggle="collapse" aria-expanded="true" aria-controls="SubOptExt">
+                                            <button type="button" class="btn btn-default">
+                                                <i class="fa fa-external-link" aria-hidden="true"></i>External Pdf Link
+                                            </button>
+                                        </li>
+                                        <li class="option option-internal collapsed" data-target="#SubOptInt" data-toggle="collapse" aria-expanded="false" aria-controls="SubOptInt">
+                                            <button type="button" class="btn btn-default">
+                                                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>Internal Pdf
+                                            </button>
+                                        </li>
+                                    </ul>
+                                    <div class="panel panel-body">
+                                        <div id="SubOptExt" class="panel-option panel-option-external collapse show" data-parent="#SubContentOptionsPdf">
+                                            @using (Html.BeginForm("Index", "Menugroups", null, FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-pdf form-pdf-create" }))
+                                            {
+                                                var mId = menuId + 1;
+
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="menutype" value="7" />
+                                                <input class="submenuid" type="hidden" name="menuid" value="" />
+                                                <input class="submenuparent" type="hidden" name="menuparent" value="" />
+                                                <input type="hidden" name="PdfId" value="@ViewBag.PdfId" />
+                                                <div class="form-horizontal">
+                                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                                    <div class="row form-group">
+                                                        @Html.LabelFor(model => model.PdfModel.Title, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.PdfModel.Title, new { htmlAttributes = new { @class = "form-control" } })
+                                                        @Html.ValidationMessageFor(model => model.PdfModel.Title, "", new { @class = "text-danger" })
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        @Html.Label("Pdf Link", null, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.PdfModel.ExLink, new { htmlAttributes = new { @class = "form-control" } })
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        @Html.LabelFor(model => model.PdfModel.Publish, htmlAttributes: new { @class = "control-label w-100" })
+                                                        <div class="option-publish">
+                                                            <span class="pub -yes">
+                                                                <span class="pl">Yes</span>
+                                                                @Html.RadioButtonFor(model => model.PdfModel.Publish, "1")
+                                                            </span>
+                                                            <span class="pub -no">
+                                                                <span class="pl">No</span>
+                                                                @Html.RadioButtonFor(model => model.PdfModel.Publish, "0")
+                                                            </span>
+                                                            @Html.ValidationMessageFor(model => model.PdfModel.Publish, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        <div class="w-100">
+                                                            @Html.Label("External Popup Pdf Link", null, htmlAttributes: new { @class = "control-label" })
+                                                        </div>
+                                                        <div class="option-popup">
+                                                            <span class="pub -yes">
+                                                                <span class="pl">Yes</span>
+                                                                @Html.RadioButtonFor(model => model.PdfModel.IsExternal, "1")
+                                                            </span>
+                                                            <span class="pub -no">
+                                                                <span class="pl">No</span>
+                                                                @Html.RadioButtonFor(model => model.PdfModel.IsExternal, "0")
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="text-right">
+                                                    <input type="submit" value="Create" class="btn btn-success" />
+                                                </div>
+                                            }
+                                        </div>
+                                        <div id="SubOptInt" class="panel-option panel-option-internal collapse" data-parent="SubContentOptionsPdf">
+                                            @using (Html.BeginForm("Index", "Menugroups", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                            {
+                                                var mId = menuId + 1;
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="menutype" value="7" />
+                                                <input class="submenuid" type="hidden" name="menuid" value="" />
+                                                <input class="submenuparent" type="hidden" name="menuparent" value="" />
+                                                <input type="hidden" name="PdfId" value="@ViewBag.PdfId" />
+
+                                                <div class="form-horizontal form-row-custom">
+                                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                                    <div class="row form-group">
+                                                        @Html.LabelFor(model => model.PdfModel.Title, htmlAttributes: new { @class = "control-label col-md-3" })
+                                                        <div class="col-md-9">
+                                                            @Html.EditorFor(model => model.PdfModel.Title, new { htmlAttributes = new { @class = "form-control" } })
+                                                            @Html.ValidationMessageFor(model => model.PdfModel.Title, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row form-group">
+                                                        @Html.LabelFor(model => model.PdfModel.Summary, htmlAttributes: new { @class = "control-label col-md-3" })
+                                                        <div class="col-md-9">
+                                                            @Html.EditorFor(model => model.PdfModel.Summary, new { htmlAttributes = new { @class = "form-control" } })
+                                                            @Html.ValidationMessageFor(model => model.PdfModel.Summary, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        @Html.LabelFor(model => model.PdfModel.Created, htmlAttributes: new { @class = "control-label col-md-3" })
+                                                        <div class="col-md-9">
+                                                            @Html.EditorFor(model => model.PdfModel.Created, new { htmlAttributes = new { @class = "form-control datepicker" }, type = "date" })
+                                                            @Html.ValidationMessageFor(model => model.PdfModel.Created, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        @Html.Label("Image", new { @class = "control-label col-md-3" })
+                                                        <div class="col-md-9">
+                                                            <input type="file" id="uploadImg" name="fileImg" accept="image/png,image/jpg,image/jpeg" onchange="fileCheck(this)" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        @Html.Label("Pdf File", new { @class = "control-label col-md-3" })
+                                                        <div class="col-md-9">
+                                                            <input type="file" id="uploadPdf" name="filePdf" accept=".pdf" onchange="fileCheck(this)" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        @Html.LabelFor(model => model.PdfModel.Publish, htmlAttributes: new { @class = "control-label col-md-3" })
+                                                        <div class="col-md-9">
+                                                            <span class="pub -yes">
+                                                                <span class="pl">Yes</span>
+                                                                @Html.RadioButtonFor(model => model.PdfModel.Publish, "1")
+                                                            </span>
+                                                            <span class="pub -no">
+                                                                <span class="pl">No</span>
+                                                                @Html.RadioButtonFor(model => model.PdfModel.Publish, "0")
+                                                            </span>
+                                                            @Html.ValidationMessageFor(model => model.PdfModel.Publish, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        @Html.Label("External Popup Pdf Link", null, htmlAttributes: new { @class = "control-label col-12" })
+                                                        <div class="col-12">
+                                                            <span class="pub -yes">
+                                                                <span class="pl">Yes</span>
+                                                                @Html.RadioButtonFor(model => model.PdfModel.IsExternal, "1")
+                                                            </span>
+                                                            <span class="pub -no">
+                                                                <span class="pl">No</span>
+                                                                @Html.RadioButtonFor(model => model.PdfModel.IsExternal, "0")
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <input type="submit" value="Create" class="btn btn-success" />
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="SubContentLink" class="content-collapse collapse">
+                                <div class="content-subheader d-flex justify-content-between">
+                                    <h4>URL</h4>
+                                    <button type="button" class="btn btn-default btn-sm block collapse-slide" data-parentid="#SubContentLink" data-toggleblock="#SubContentAdmin">Back to Types</button>
+                                </div>
+                                <hr />
+                                <div id="SubContentOptionsUrl" class="content-options content-options-url">
+                                    <ul class="panel panel-menu d-flex flex-row">
+                                        <li class="option option-external" data-target="#SubOptExtUrl" data-toggle="collapse" aria-expanded="true" aria-controls="SubOptExtUrl">
+                                            <button type="button" class="btn btn-default">
+                                                <i class="fa fa-external-link" aria-hidden="true"></i>
+                                                External Url
+                                            </button>
+                                        </li>
+                                        <li class="option option-internal collapsed" data-target="#SubOptIntUrl" data-toggle="collapse" aria-expanded="false" aria-controls="SubOptIntUrl">
+                                            <button type="button" class="btn btn-default">
+                                                <i class="fa fa-link" aria-hidden="true"></i>
+                                                Internal Url
+                                            </button>
+                                        </li>
+                                    </ul>
+                                    <div class="panel panel-body">
+                                        <div id="SubOptExtUrl" class="panel-option panel-option-external collapse show" data-parent="#SubContentOptionsUrl">
+                                            @using (Html.BeginForm("Index", "Menugroups", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                            {
+                                                var mId = menuId + 1;
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="menutype" value="8" />
+                                                <input class="submenuid" type="hidden" name="menuid" value="" />
+                                                <input class="submenuparent" type="hidden" name="menuparent" value="" />
+                                                <input type="hidden" name="ElinkId" value="@ViewBag.ElinkId" />
+
+                                                <div class="form-horizontal form-row-custom">
+                                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                                    <div class="row form-group">
+                                                        @Html.LabelFor(model => model.ExtLinkModel.Title, htmlAttributes: new { @class = "control-label col-md-3" })
+                                                        <div class="col-md-9">
+                                                            @Html.EditorFor(model => model.ExtLinkModel.Title, new { htmlAttributes = new { @class = "form-control" } })
+                                                            @Html.ValidationMessageFor(model => model.ExtLinkModel.Title, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        @Html.Label("Link", null, htmlAttributes: new { @class = "control-label col-md-3" })
+                                                        <div class="col-md-9">
+                                                            @Html.EditorFor(model => model.ExtLinkModel.UrlLink, new { htmlAttributes = new { @class = "form-control" } })
+                                                            @Html.ValidationMessageFor(model => model.ExtLinkModel.UrlLink, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        @Html.LabelFor(model => model.ExtLinkModel.Icon, htmlAttributes: new { @class = "control-label col-md-3" })
+                                                        <div class="col-md-9">
+                                                            @Html.EditorFor(model => model.ExtLinkModel.Icon, new { htmlAttributes = new { @class = "form-control" } })
+                                                            @Html.ValidationMessageFor(model => model.ExtLinkModel.Icon, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        @Html.Label("Image", new { @class = "control-label col-md-3" })
+                                                        <div class="col-md-9">
+                                                            <input type="file" id="uploadImg" name="LinkFileImg" accept="image/png,image/jpg,image/jpeg" onchange="fileCheck(this)" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        @Html.Label("External Popup Link", null, htmlAttributes: new { @class = "control-label col-12" })
+                                                        <div class="col-12">
+                                                            <span class="pub -yes">
+                                                                <span class="pl">Yes</span>
+                                                                @Html.RadioButtonFor(model => model.ExtLinkModel.IsExternal, "1")
+                                                            </span>
+                                                            <span class="pub -no">
+                                                                <span class="pl">No</span>
+                                                                @Html.RadioButtonFor(model => model.ExtLinkModel.IsExternal, "0")
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <input type="submit" value="Create" class="btn btn-success" />
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                        <div id="SubOptIntUrl" class="panel-option panel-option-internal collapse" data-parent="#SubContentOptionsUrl">
+                                            @using (Html.BeginForm("Index", "Menugroups", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                            {
+                                                var mId = menuId + 1;
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="menutype" value="8" />
+                                                <input class="submenuid" type="hidden" name="menuid" value="" />
+                                                <input class="submenuparent" type="hidden" name="menuparent" value="" />
+                                                <input type="hidden" name="ElinkId" value="@ViewBag.ElinkId" />
+
+                                                <div class="form-horizontal form-row-custom">
+                                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                                    <div class="row form-group">
+                                                        @Html.LabelFor(model => model.ExtLinkModel.Title, htmlAttributes: new { @class = "control-label col-md-3" })
+                                                        <div class="col-md-9">
+                                                            @Html.EditorFor(model => model.ExtLinkModel.Title, new { htmlAttributes = new { @class = "form-control" } })
+                                                            @Html.ValidationMessageFor(model => model.ExtLinkModel.Title, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row form-group">
+                                                        @Html.Label("Link", null, htmlAttributes: new { @class = "control-label col-md-3" })
+                                                        <div class="col-md-9">
+                                                            @Html.EditorFor(model => model.ExtLinkModel.UrlLink, new { htmlAttributes = new { @class = "form-control" } })
+                                                            @Html.ValidationMessageFor(model => model.ExtLinkModel.UrlLink, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        @Html.LabelFor(model => model.ExtLinkModel.Created, htmlAttributes: new { @class = "control-label col-md-3" })
+                                                        <div class="col-md-9">
+                                                            @Html.EditorFor(model => model.ExtLinkModel.Created, new { htmlAttributes = new { @class = "form-control datepicker" }, type = "date" })
+                                                            @Html.ValidationMessageFor(model => model.ExtLinkModel.Created, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        @Html.LabelFor(model => model.ExtLinkModel.Icon, htmlAttributes: new { @class = "control-label col-md-3" })
+                                                        <div class="col-md-9">
+                                                            @Html.EditorFor(model => model.ExtLinkModel.Icon, new { htmlAttributes = new { @class = "form-control" } })
+                                                            @Html.ValidationMessageFor(model => model.ExtLinkModel.Icon, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        @Html.Label("Image", new { @class = "control-label col-md-3" })
+                                                        <div class="col-md-9">
+                                                            <input type="file" id="uploadImg" name="LinkFileImg" accept="image/png,image/jpg,image/jpeg" onchange="fileCheck(this)" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        @Html.Label("External Popup Link", null, htmlAttributes: new { @class = "control-label col-12" })
+                                                        <div class="col-12">
+                                                            <span class="pub -yes">
+                                                                <span class="pl">Yes</span>
+                                                                @Html.RadioButtonFor(model => model.ExtLinkModel.IsExternal, "1")
+                                                            </span>
+                                                            <span class="pub -no">
+                                                                <span class="pl">No</span>
+                                                                @Html.RadioButtonFor(model => model.ExtLinkModel.IsExternal, "0")
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <input type="submit" value="Create" class="btn btn-success" />
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="SubContentMenu" class="content-collapse collapse">
+                                <div class="content-subheader d-flex justify-content-between">
+                                    <h4>Menu Item</h4>
+                                    <button type="button" class="btn btn-default btn-sm block collapse-slide" data-parentid="#SubContentMenu" data-toggleblock="#SubContentAdmin">Back to Types</button>
+                                </div>
+                                <hr />
+                                @using (Html.BeginForm("Index", "Menugroups", null, FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-page form-menu-create" }))
+                                {
+
+                                    @Html.AntiForgeryToken()
+                                    <input class="submenuparent" type="hidden" name="menuparent" value="" />
+                                    <input type="hidden" name="menutype" value="2" />
+                                    <div class="form-group form-item-name">
+                                        @Html.Label("Menu Name", htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.Label("Assign Page", htmlAttributes: new { @class = "control-label" })
+                                        @Html.DropDownList("PageListId", ViewBag.Pages as SelectList, "Select Page", htmlAttributes: new { @class = "form-control selectpicker" })
+                                    </div>
+                                    <div class="modal-footer">
+                                        <input type="submit" value="Create" class="btn btn-success" />
+                                    </div>
+                                }
+                            </div>
+                            <div id="SubContentModal" class="content-collapse collapse">
+                                <div class="content-subheader d-flex justify-content-between">
+                                    <h4>Modal</h4>
+                                    <button type="button" class="btn btn-default btn-sm block collapse-slide" data-parentid="#SubContentModal" data-toggleblock="#SubContentAdmin">Back to Types</button>
+                                </div>
+                                <hr />
+                                <div id="SubContentModal" class="content-options content-options-url">
+                                    <ul class="panel panel-menu d-flex flex-row">
+                                        <li class="option option-modal-menu" data-target="#SubOptModalMenu" data-toggle="collapse" aria-expanded="true" aria-controls="SubOptModalMenu">
+                                            <button type="button" class="btn btn-default">
+                                                <i class="fa fa-list-ul" aria-hidden="true"></i>
+                                                Modal Menu
+                                            </button>
+                                        </li>
+                                        <li class="option option-modal-content collapsed" data-target="#SubOptModalContent" data-toggle="collapse" aria-expanded="false" aria-controls="SubOptModalContent">
+                                            <button type="button" class="btn btn-default">
+                                                <i class="fa fa-align-left" aria-hidden="true"></i>
+                                                Modal Content
+                                            </button>
+                                        </li>
+                                    </ul>
+                                    <div class="panel panel-body">
+                                        <div id="SubOptModalMenu" class="panel-option panel-option-menu collapse show" data-parent="#SubContentModal">
+                                            @using (Html.BeginForm("Index", "Menugroups", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                            {
+                                                var mId = menuId + 1;
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="menutype" value="26" />
+                                                <input class="submenuid" type="hidden" name="menuid" value="" />
+                                                <input class="submenuparent" type="hidden" name="menuparent" value="" />
+                                                <input type="hidden" name="ModalId" value="@ViewBag.ModalId" />
+
+                                                <div class="form-horizontal form-row-custom">
+                                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                                    <div class="row form-group">
+                                                        @Html.LabelFor(model => model.ModalModel.Title, htmlAttributes: new { @class = "control-label col-md-3" })
+                                                        <div class="col-md-9">
+                                                            @Html.EditorFor(model => model.ModalModel.Title, new { htmlAttributes = new { @class = "form-control" } })
+                                                            @Html.ValidationMessageFor(model => model.ModalModel.Title, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        @Html.LabelFor(model => model.ModalModel.Icon, htmlAttributes: new { @class = "control-label col-md-3" })
+                                                        <div class="col-md-9">
+                                                            @Html.EditorFor(model => model.ModalModel.Icon, new { htmlAttributes = new { @class = "form-control" } })
+                                                            @Html.ValidationMessageFor(model => model.ModalModel.Icon, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        @Html.Label("Image", new { @class = "control-label col-md-3" })
+                                                        <div class="col-md-9">
+                                                            <input type="file" id="uploadImg" name="ModalfileImg" accept="image/png,image/jpg,image/jpeg" onchange="fileCheck(this)" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <input type="submit" value="Create" class="btn btn-success" />
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                        <div id="SubOptModalContent" class="panel-option panel-option-content collapse" data-parent="#SubContentModal">
+                                            @using (Html.BeginForm("Index", "Menugroups", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                            {
+                                                var mId = menuId + 1;
+                                                @Html.AntiForgeryToken()
+                                                <input id="ModalMenutype" type="hidden" name="menutype" value="26" />
+                                                <input class="submenuid" type="hidden" name="menuid" value="" />
+                                                <input class="submenuparent" type="hidden" name="menuparent" value="" />
+                                                <input type="hidden" name="ModalId" value="@ViewBag.ModalId" />
+
+                                                <div id="ModalContent" class="form-horizontal form-row-custom">
+                                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                                    <div class="row form-group">
+                                                        @Html.LabelFor(model => model.ModalModel.Title, htmlAttributes: new { @class = "control-label col-md-3" })
+                                                        <div class="col-md-9">
+                                                            @Html.EditorFor(model => model.ModalModel.Title, new { htmlAttributes = new { @class = "form-control" } })
+                                                            @Html.ValidationMessageFor(model => model.ModalModel.Title, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                    <div id="SingleModalContent" class="row form-group collapse show" data-parent="#ModalContent">
+                                                        <div class="col-md-3">
+                                                            <label class="control-label">Single Content</label>
+                                                            <button type="button" class="btn btn-default btn-sm btn-option-content" data-menutype="27" data-target="#TabModalContent" data-toggle="collapse" aria-expanded="false" aria-controls="TabModalContent">
+                                                                Tab Panel Content
+                                                            </button>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <textarea id="textEditorSingleContent" class="form-control texteditor  fmi fmi-content" name="ModalPanelContentSingle" data-conid="1" rows="3" placeholder="Add Content"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div id="TabModalContent" class="row form-group collapse" data-parent="#ModalContent">
+                                                        <div class="col-md-3">
+                                                            <label class="control-label">Tab Panels</label>
+                                                            <button type="button" class="btn btn-default btn-sm btn-option-content" data-menutype="26" data-target="#SingleModalContent" data-toggle="collapse" aria-expanded="true" aria-controls="SingleModalContent">
+                                                                Single Content
+                                                            </button>
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <div id="ModalContainer">
+                                                                <div id="fmi-1" class="fm-item" data-fmitem="1">
+                                                                    <input type="text" class="form-control fmi fmi-title" name="ModalPanelContent" placeholder="Add Subtitle" data-subid="1" />
+                                                                    <textarea id="textEditorModal1" class="form-control texteditor  fmi fmi-content" name="ModalPanelContent" data-conid="1" rows="3" placeholder="Add Content"></textarea>
+                                                                </div>
+                                                            </div>
+                                                            <button id="modalDuplicate" type="button" class="btn btn-success btn-sm" data-container="#ModalContainer"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        @Html.LabelFor(model => model.ModalModel.Icon, htmlAttributes: new { @class = "control-label col-md-3" })
+                                                        <div class="col-md-9">
+                                                            @Html.EditorFor(model => model.ModalModel.Icon, new { htmlAttributes = new { @class = "form-control" } })
+                                                            @Html.ValidationMessageFor(model => model.ModalModel.Icon, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        @Html.Label("Image", new { @class = "control-label col-md-3" })
+                                                        <div class="col-md-9">
+                                                            <input type="file" id="uploadImg" name="ModalfileImg" accept="image/png,image/jpg,image/jpeg" onchange="fileCheck(this)" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <input type="submit" value="Create" class="btn btn-success" />
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Add SubMenu Item-->
+
+        <div class="modal fade modal-create-content" id="CreateContent" tabindex="-1" role="dialog" aria-labelledby="MenuItemParent" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="MenuItemParent">Create Content</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="contentAdmin" class="content-header admin-main">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="admin-bl admin-bl-pages d-flex bl-icon-text  block collapse-slide" data-toggle="collapse" data-target="#contentPage" data-parentid="#contentAdmin" aria-expanded="false" aria-controls="contentPage">
+                                        <div class="abl-icon">
+                                            <span class="bg-img" data-target=".icon-bl">
+                                                <img class="icon-bl" src="~/Content/Images/icon-page.png" />
+                                            </span>
+                                        </div>
+                                        <div class="abl-text">
+                                            <h3>Page</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="admin-bl admin-bl-ext-links d-flex bl-icon-text block collapse-slide" data-toggle="collapse" data-target="#contentMenu" data-parentid="#contentAdmin" aria-expanded="false" aria-controls="contentMenu">
+                                        <div class="abl-icon">
+                                            <span class="bg-img" data-target=".icon-bl">
+                                                <img class="icon-bl" src="~/Content/Images/icon-menu.png" />
+                                            </span>
+                                        </div>
+                                        <div class="abl-text">
+                                            <h3>Menu Item <span>( for existing pages )</span></h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center">
+                                <div class="col-sm-6">
+                                    <div class="admin-bl admin-bl-modal d-flex bl-icon-text block collapse-slide" data-toggle="collapse" data-target="#contentModal" data-parentid="#contentAdmin" aria-expanded="false" aria-controls="contentModal">
+                                        <div class="abl-icon">
+                                            <span class="bg-img" data-target=".icon-bl">
+                                                <img class="icon-bl" src="~/Content/Images/icon-page.png" />
+                                            </span>
+                                        </div>
+                                        <div class="abl-text">
+                                            <h3>Modal</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content-body">
+                            <div id="contentPage" class="content-collapse collapse">
+                                <div class="content-subheader d-flex justify-content-between">
+                                    <h4>Page</h4>
+                                    <button type="button" class="btn btn-default btn-sm block collapse-slide" data-parentid="#contentPage" data-toggleblock="#contentAdmin">Back to Types</button>
+                                </div>
+                                <hr />
+                                @using (Html.BeginForm("Index", "Menugroups", null, FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-page form-page-create" }))
+                                {
+                                    var mId = menuId + 1;
+
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="menutype" value="3" />
+                                    <input type="hidden" name="menuid" value="@(mId)" />
+                                    <input type="hidden" name="PageModel_Maintext" value="" />
+                                    <input type="hidden" name="PageId" value="@ViewBag.PageId" />
+
+                                    <div class="form-horizontal">
+                                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                        <div class="row form-group">
+                                            @Html.Label("Image Header", new { @class = "control-label col-md-3" })
+                                            <div class="col-md-9">
+                                                <div class="row">
+                                                    <div class="col-md-8">
+                                                        <input type="file" id="upload" name="fileImg" onchange="fileCheck(this)" />
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        @Html.LabelFor(model => model.PageModel.Created, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.PageModel.Created, new { htmlAttributes = new { @class = "form-control datepicker" }, type = "date" })
+                                                        @Html.ValidationMessageFor(model => model.PageModel.Created, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            @Html.LabelFor(model => model.PageModel.Title, htmlAttributes: new { @class = "control-label col-md-3" })
+                                            <div class="col-md-9">
+                                                @Html.EditorFor(model => model.PageModel.Title, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.PageModel.Title, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                        <div class="row form-group">
+                                            @Html.LabelFor(model => model.PageModel.Summary, htmlAttributes: new { @class = "control-label col-md-3" })
+                                            <div class="col-md-9">
+                                                @Html.EditorFor(model => model.PageModel.Summary, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.PageModel.Summary, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div id="form-multiplecontent" class="form-group form-multipletext" data-content="0">
+                                            <div class="row">
+                                                <div class="control-label col-md-3">
+                                                    <label for="multipletext">Multiple Content</label>
+                                                    <!--<button class="btn btn-primary btn-sm collapse-hidden" type="button" data-target="#form-singlecontent" data-parentid="#form-multiplecontent" aria-expanded="false" aria-controls="form-multipletext">Maintext</button>-->
+                                                </div>
+                                                <div class="col-md-9">
+                                                    <div class="container-duplicate-main">
+                                                        <div id="fmi-1" class="fm-item" data-fmitem="0">
+                                                            <input type="text" class="form-control fmi fmi-title" name="subcontent" placeholder="Add Subtitle" data-subid="1" />
+                                                            <textarea id="textEditor0" class="form-control texteditor fmi fmi-content" name="subcontent" data-conid="1" rows="3" placeholder="Add Subcontent"></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <button type="button" class="btn btn-success btn-sm btn-duplicate" data-container=".container-duplicate-main"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row form-group">
+                                            @Html.LabelFor(model => model.PageModel.Publish, htmlAttributes: new { @class = "control-label col-md-3" })
+                                            <div class="col-md-9">
+                                                <span class="pub -yes">
+                                                    <span class="pl">Yes</span>
+                                                    @Html.RadioButtonFor(model => model.PageModel.Publish, "1")
+                                                </span>
+                                                <span class="pub -no">
+                                                    <span class="pl">No</span>
+                                                    @Html.RadioButtonFor(model => model.PageModel.Publish, "0")
+                                                </span>
+
+
+                                                @Html.ValidationMessageFor(model => model.PageModel.Publish, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div id="adv-set" class="collapse multi-collapse">
+                                            <div class="row form-group">
+                                                @Html.LabelFor(model => model.PageModel.MetaKeywords, "Meta Keywords", htmlAttributes: new { @class = "control-label col-md-3" })
+                                                <div class="col-md-9">
+                                                    @Html.EditorFor(model => model.PageModel.MetaKeywords, new { htmlAttributes = new { @class = "form-control" } })
+                                                    @Html.ValidationMessageFor(model => model.PageModel.MetaKeywords, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                @Html.LabelFor(model => model.PageModel.MetaDescription, "Meta Description", htmlAttributes: new { @class = "control-label col-md-3" })
+                                                <div class="col-md-9">
+                                                    @Html.EditorFor(model => model.PageModel.MetaDescription, new { htmlAttributes = new { @class = "form-control" } })
+                                                    @Html.ValidationMessageFor(model => model.PageModel.MetaDescription, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                            <div class="row form-group">
+                                                @Html.LabelFor(model => model.PageModel.AuthorId, "Author", htmlAttributes: new { @class = "control-label col-md-3" })
+                                                <div class="col-md-9">
+                                                    @Html.EditorFor(model => model.PageModel.AuthorId, new { htmlAttributes = new { @class = "form-control" } })
+                                                    @Html.ValidationMessageFor(model => model.PageModel.AuthorId, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                @Html.LabelFor(model => model.PageModel.PageUrl, "Page URL", htmlAttributes: new { @class = "control-label col-md-3" })
+                                                <div class="col-md-9">
+                                                    @Html.EditorFor(model => model.PageModel.PageUrl, new { htmlAttributes = new { @class = "form-control" } })
+                                                    @Html.ValidationMessageFor(model => model.PageModel.PageUrl, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-offset-2 col-md-10 text-right">
+                                                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#adv-set" aria-expanded="false" aria-controls="adv-set">Advance</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <input type="submit" value="Create" class="btn btn-success" />
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div id="contentMenu" class="content-collapse collapse">
+                                <div class="content-subheader d-flex justify-content-between">
+                                    <h4>Menu Item</h4>
+                                    <button type="button" class="btn btn-default btn-sm block collapse-slide" data-parentid="#contentMenu" data-toggleblock="#contentAdmin">Back to Types</button>
+                                </div>
+                                <hr />
+                                @using (Html.BeginForm("Index", "Menugroups", null, FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-page form-menu-create" }))
+                                {
+
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="menutype" value="1" />
+                                    <div class="form-group form-item-name">
+                                        @Html.Label("Menu Name", htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.Label("Assign Page", htmlAttributes: new { @class = "control-label" })
+                                        @Html.DropDownList("PageListId", ViewBag.Pages as SelectList, "Select Page", htmlAttributes: new { @class = "form-control selectpicker" })
+                                    </div>
+                                    <div class="modal-footer">
+                                        <input type="submit" value="Create" class="btn btn-success" />
+                                    </div>
+                                }
+                            </div>
+                            <div id="contentModal" class="content-collapse collapse">
+                                <div class="content-subheader d-flex justify-content-between">
+                                    <h4>Modal</h4>
+                                    <button type="button" class="btn btn-default btn-sm block collapse-slide" data-parentid="#contentModal" data-toggleblock="#contentAdmin">Back to Types</button>
+                                </div>
+                                <hr />
+                                @using (Html.BeginForm("Index", "Menugroups", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                {
+                                    var mId = menuId + 1;
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="menutype" value="25" />
+                                    <input type="hidden" name="menuid" value="@(mId)" />
+                                    <input type="hidden" name="ModalId" value="@ViewBag.ModalId" />
+
+                                    <div class="form-horizontal form-row-custom">
+                                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                        <div class="row form-group">
+                                            @Html.LabelFor(model => model.ModalModel.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            <div class="col-md-10">
+                                                @Html.EditorFor(model => model.ModalModel.Title, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.ModalModel.Title, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            @Html.Label("Image", new { @class = "control-label col-md-2" })
+                                            <div class="col-md-10">
+                                                <input type="file" id="uploadImg" name="ModalfileImg" accept="image/png,image/jpg,image/jpeg" onchange="fileCheck(this)" />
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <input type="submit" value="Create" class="btn btn-success" />
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
