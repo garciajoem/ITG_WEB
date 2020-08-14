@@ -162,6 +162,7 @@ namespace itgweb.Controllers
                 s.Publish,
                 s.ImageId,
                 s.Img,
+                s.Icon
             });
 
             List<PageViewModel> PageLists = PageItems.Select(item => new PageViewModel()
@@ -172,7 +173,8 @@ namespace itgweb.Controllers
                 Summary = item.Summary,
                 Publish = item.Publish,
                 ImageId = item.ImageId,
-                Img = item.Img
+                Img = item.Img,
+                Icon = item.Icon
             }).ToList();
             var Modal = db.Modals.Select(s => new
             {
@@ -314,6 +316,7 @@ namespace itgweb.Controllers
             {
                 return null;
             }
+
         }
         /// <summary>
         /// 

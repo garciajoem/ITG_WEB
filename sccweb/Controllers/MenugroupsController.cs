@@ -670,35 +670,71 @@ namespace itgweb.Controllers
                     db.Pdfs.Add(subpdfitem);
                     break;
                 case 6:
-                    var subpageitem = new PageModel
+                    var dataImg = Request.Form["PageImg"];
+                    if (dataImg == "ni")
                     {
-                        Title = model.PageModel.Title,
-                        Summary = model.PageModel.Summary,
-                        Maintext = model.PageModel.Maintext,
-                        Created = model.PageModel.Created,
-                        MetaDescription = model.PageModel.MetaDescription,
-                        MetaKeywords = model.PageModel.MetaKeywords,
-                        Publish = model.PageModel.Publish,
-                        AuthorId = model.PageModel.AuthorId,
-                        ImageId = model.PageModel.ImageId,
-                        NavbarId = model.PageModel.NavbarId,
-                        SidenavId = menuId,
-                        Img = model.PageModel.Img,
-                        SubContent = Request["subcontent"],
-                        PageUrl = model.PageModel.PageUrl,
-                        menuitems = model.PageModel.menuitems
-                    };
-
-                    var submenuitem = new Menugroup
+                        var subpageitem = new PageModel
+                        {
+                            Title = model.PageModel.Title,
+                            Summary = model.PageModel.Summary,
+                            Maintext = model.PageModel.Maintext,
+                            Created = model.PageModel.Created,
+                            MetaDescription = model.PageModel.MetaDescription,
+                            MetaKeywords = model.PageModel.MetaKeywords,
+                            Publish = model.PageModel.Publish,
+                            AuthorId = model.PageModel.AuthorId,
+                            ImageId = model.PageModel.ImageId,
+                            NavbarId = model.PageModel.NavbarId,
+                            SidenavId = menuId,
+                            Icon = model.PageModel.Icon,
+                            SubContent = Request["subcontent"],
+                            PageUrl = model.PageModel.PageUrl,
+                            menuitems = model.PageModel.menuitems
+                        };
+                        var submenuitem = new Menugroup
+                        {
+                            Name = model.PageModel.Title,
+                            IsParent = 0,
+                            ParentId = parentId,
+                            Type = 1,
+                            PageId = pageId
+                        };
+                        db.Menugroups.Add(submenuitem);
+                        db.Pages.Add(subpageitem);
+                    }
+                    else
                     {
-                        Name = model.PageModel.Title,
-                        IsParent = 0,
-                        ParentId = parentId,
-                        Type = 1,
-                        PageId = pageId
-                    };
-                    db.Menugroups.Add(submenuitem);
-                    db.Pages.Add(subpageitem);
+                        var subpageitem = new PageModel
+                        {
+                            Title = model.PageModel.Title,
+                            Summary = model.PageModel.Summary,
+                            Maintext = model.PageModel.Maintext,
+                            Created = model.PageModel.Created,
+                            MetaDescription = model.PageModel.MetaDescription,
+                            MetaKeywords = model.PageModel.MetaKeywords,
+                            Publish = model.PageModel.Publish,
+                            AuthorId = model.PageModel.AuthorId,
+                            ImageId = model.PageModel.ImageId,
+                            NavbarId = model.PageModel.NavbarId,
+                            SidenavId = menuId,
+                            Img = model.PageModel.Img,
+                            Icon = model.PageModel.Icon,
+                            SubContent = Request["subcontent"],
+                            PageUrl = model.PageModel.PageUrl,
+                            menuitems = model.PageModel.menuitems
+                        };
+                        var submenuitem = new Menugroup
+                        {
+                            Name = model.PageModel.Title,
+                            IsParent = 0,
+                            ParentId = parentId,
+                            Type = 1,
+                            PageId = pageId
+                        };
+                        db.Menugroups.Add(submenuitem);
+                        db.Pages.Add(subpageitem);
+                    }
+                    
                     break;
                 case 5:
                     HttpPostedFileBase LinkFileImg = Request.Files["LinkFileImg"];

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@(ViewBag.Title != "" ? ViewBag.Title+ " - InterWestGroup" : "InterWest - Excellence in Software Development, Programming, Oracle, Web, and Radar Security")</title>
+    <title>@(ViewBag.Title.ToString() != "" ? ViewBag.Title+ " - InterWestGroup" : "InterWest - Excellence in Software Development, Programming, Oracle, Web, and Radar Security")</title>
     <link href="~/Content/font-awesome.css" rel="stylesheet" />
     <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet">
     <link href="~/Content/style.css" rel="stylesheet" />
@@ -60,10 +60,24 @@
                                     {
                                         if (fItem.PageId == SubPageItem.Id)
                                         {
+
                                             if (SubPageItem.Publish == 1)
                                             {
+                                                var PageImgId = SubPageItem.Title.Replace(" ", "");//This line will get the Title of the Page and removes space characters
                                                 <a class="" href="~/Offices/@SubPageItem.Id">
-                                                    @SubPageItem.Title
+                                                    @if (SubPageItem.Icon != null)
+                                                    {
+                                                        <i class="@SubPageItem.Icon"></i>;
+                                                    }
+                                                    else if(SubPageItem.Img != null)
+                                                    {
+
+                                                        <img id="@PageImgId" src="~/Pages/RetrieveImage/@SubPageItem.Id" width="100%" />
+                                                    }
+                                                    else
+                                                    {
+                                                        @SubPageItem.Title
+                                                    }
                                                 </a>
                                             }
                                         }

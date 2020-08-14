@@ -68,6 +68,14 @@ $(function () {
         var textId = $(this).attr('id');
         CKEDITOR.replace(textId);
     });
+    //This triggers the submit button to check the input type file
+    $('#SubContentPage input[type="submit"]').click(function (e) {
+        //if condition checks the input type file if it has an img uploaded or not
+        if ($("#ImgUpload")[0].files[0]) {
+            //changes the VALUE of the Input PageImg into 'wi'
+            $('#PageImg').val('wi');
+        }
+    });
 
     $('.form-page-create input[type="submit"], .form-page-edit input[type="submit"]').click(function (e) {
         var textlimit = 100;

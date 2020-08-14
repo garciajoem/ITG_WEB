@@ -7199,14 +7199,11 @@ header {
   header .brand-social a {
     color: #fff;
     text-decoration: none; }
-  header .brand-social .col {
-    position: relative;
-    z-index: 10; }
   header .brand-social .col-sm-4,
   header .brand-social .col-sm-6 {
     position: relative;
     z-index: 10; }
-  header .brand-social:after {
+  header .brand-social:before {
     width: 100%;
     height: 65px;
     position: absolute;
@@ -7220,11 +7217,10 @@ header {
     -o-transform: translateY(-50%);
     transform: translateY(-50%);
     background: #464648;
-    z-index: 3;
     content: '';
     display: block; }
     @media (max-width: 575.98px) {
-      header .brand-social:after {
+      header .brand-social:before {
         -webkit-transform: translateY(0);
         -moz-transform: translateY(0);
         -ms-transform: translateY(0);
@@ -8113,6 +8109,9 @@ header {
     bottom: auto;
     left: 50%; }
 
+.modal-heaeder-blocks {
+  z-index: 9999; }
+
 .modaBlocks .modal-dialog {
   -webkit-transform: translateY(-60%) !important;
   -moz-transform: translateY(-60%) !important;
@@ -8525,6 +8524,11 @@ form .form-group {
 
 /* ----- END SECTIONS -----*/
 /* ----- PAGES -----*/
+.admin .body-content {
+  max-width: 1100px;
+  padding: 0 10px;
+  background-image: none !important; }
+
 .admin-dashboard .admin-btn-back {
   display: none; }
 

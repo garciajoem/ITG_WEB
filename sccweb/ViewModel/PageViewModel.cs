@@ -25,6 +25,7 @@ namespace itgweb.ViewModel
         public Nullable<int> ImageId { get; set; }
         public Nullable<int> NavbarId { get; set; }
         public Nullable<int> SidenavId { get; set; }
+        public string Icon { get; set; }
         public byte[] Img { get; set; }
         [AllowHtml]
         public string SubContent { get; set; }
